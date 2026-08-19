@@ -357,6 +357,9 @@ def menu_add():
         image = None
         if request.files.get("image"):
             image = save_uploaded_file(request.files["image"], "products")
+            if image is None:
+                flash("Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP, SVG, ICO) under 16MB.", "danger")
+                return render_template("admin/menu_form.html", item=None, categories=categories)
         item = MenuItem(
             name=name, slug=name.lower().replace(" ", "-"),
             category_id=sanitize_int(request.form.get("category_id")),
@@ -397,8 +400,10 @@ def menu_edit(mid):
         item.status = request.form.get("status", "active")
         if request.files.get("image"):
             path = save_uploaded_file(request.files["image"], "products")
-            if path:
-                item.image = path
+            if path is None:
+                flash("Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP, SVG, ICO) under 16MB.", "danger")
+                return render_template("admin/menu_form.html", item=item, categories=categories)
+            item.image = path
         db.session.commit()
         log_activity(current_user, "menu_item_updated", "menu", request.remote_addr)
         flash("Menu item updated.", "success")

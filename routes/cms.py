@@ -93,6 +93,9 @@ def banner_add():
         image = None
         if request.files.get("image"):
             image = save_uploaded_file(request.files["image"], "banners")
+            if image is None:
+                flash("Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP, SVG, ICO) under 16MB.", "danger")
+                return render_template("admin/cms_banner_form.html", banner=None)
         b = Banner(
             title=request.form.get("title", "").strip(),
             description=request.form.get("description", ""),
@@ -126,8 +129,10 @@ def banner_edit(bid):
         b.status = request.form.get("status", "active")
         if request.files.get("image"):
             path = save_uploaded_file(request.files["image"], "banners")
-            if path:
-                b.image = path
+            if path is None:
+                flash("Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP, SVG, ICO) under 16MB.", "danger")
+                return render_template("admin/cms_banner_form.html", banner=b)
+            b.image = path
         db.session.commit()
         log_activity(current_user, "banner_updated", "cms", request.remote_addr)
         flash("Banner updated.", "success")
