@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% block title %}Footer Settings{% endblock %}
+{% block page_title %}Website Footer{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Description</label>
+        <textarea name="description" class="form-control" rows="3">{{ footer.description if footer else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Facebook</label>
+        <input type="text" name="facebook" class="form-control" value="{{ footer.facebook if footer else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Instagram</label>
+        <input type="text" name="instagram" class="form-control" value="{{ footer.instagram if footer else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Twitter</label>
+        <input type="text" name="twitter" class="form-control" value="{{ footer.twitter if footer else '' }}">
+      </div>
+      <div class="form-group">
+        <label>YouTube</label>
+        <input type="text" name="youtube" class="form-control" value="{{ footer.youtube if footer else '' }}">
+      </div>
+      <div class="form-group">
+        <label>LinkedIn</label>
+        <input type="text" name="linkedin" class="form-control" value="{{ footer.linkedin if footer else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Opening Hours</label>
+        <input type="text" name="opening_hours" class="form-control" value="{{ footer.opening_hours if footer else '' }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Copyright Text</label>
+        <input type="text" name="copyright_text" class="form-control" value="{{ footer.copyright_text if footer else '' }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

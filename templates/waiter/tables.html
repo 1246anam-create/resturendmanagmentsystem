@@ -1,0 +1,15 @@
+{% extends "waiter/base.html" %}
+{% block title %}Tables{% endblock %}
+{% block page_title %}Tables{% endblock %}
+{% block content %}
+<div class="tables-grid">
+  {% for t in tables %}
+  <div class="table-box table-{{ t.status }}">
+    <div class="table-no">{{ t.table_number }}</div>
+    <div class="table-meta">{{ t.capacity }} seats</div>
+    <div class="table-status"><span class="badge badge-{{ t.status|status_badge }}">{{ t.status }}</span></div>
+    <a href="{{ url_for('waiter.pos', table_id=t.id) }}" class="btn btn-sm btn-primary">Open</a>
+  </div>
+  {% else %}<p class="empty-state">No tables.</p>{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "admin/base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    {% for n in notifications %}
+    <div class="notif-item d-flex between {% if not n.is_read %}unread{% endif %}">
+      <div>
+        <p class="mb-0"><strong>{{ n.title }}</strong></p>
+        <p class="text-muted mb-0">{{ n.message }}</p>
+        <small class="text-muted">{{ n.created_at.strftime('%Y-%m-%d %H:%M') if n.created_at else '' }}</small>
+      </div>
+      {% if not n.is_read %}<button class="btn btn-sm btn-outline" data-action data-url="{{ url_for('admin.notification_read', nid=n.id) }}" data-reload="true">Mark Read</button>{% endif %}
+    </div>
+    {% else %}
+    <p class="empty-state">No notifications.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

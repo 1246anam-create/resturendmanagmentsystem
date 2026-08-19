@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Purchases{% endblock %}
+{% block page_title %}Purchases{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('admin.purchase_add') }}" class="btn btn-success">+ New Purchase</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Purchase #</th><th>Supplier</th><th>Date</th><th>Total</th><th>Payment</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for p in purchases %}
+      <tr>
+        <td>{{ p.purchase_number }}</td>
+        <td>{{ p.supplier.name if p.supplier else '-' }}</td>
+        <td>{{ p.purchase_date.strftime('%Y-%m-%d') if p.purchase_date else '-' }}</td>
+        <td>{{ p.total|currency }}</td>
+        <td><span class="badge badge-{{ p.payment_status|status_badge }}">{{ p.payment_status }}</span></td>
+        <td>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.purchase_delete', pid=p.id) }}" data-confirm="Delete this purchase?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty-state">No purchases.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

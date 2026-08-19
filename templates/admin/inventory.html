@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block page_title %}Inventory{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('admin.inventory_add') }}" class="btn btn-success">+ Add Item</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Name</th><th>Category</th><th>Qty</th><th>Unit</th><th>Min</th><th>Price</th><th>Supplier</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for it in items %}
+      <tr>
+        <td>{{ it.name }}</td>
+        <td>{{ it.category }}</td>
+        <td>{{ it.quantity }}</td>
+        <td>{{ it.unit }}</td>
+        <td>{{ it.minimum_stock }}</td>
+        <td>{{ it.purchase_price|currency }}</td>
+        <td>{{ it.supplier.name if it.supplier else '-' }}</td>
+        <td><span class="badge badge-{{ it.status|status_badge }}">{{ it.status }}</span></td>
+        <td>
+          <a href="{{ url_for('admin.inventory_edit', iid=it.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.inventory_delete', iid=it.id) }}" data-confirm="Delete this item?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="empty-state">No inventory items.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

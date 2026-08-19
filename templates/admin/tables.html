@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% block title %}Tables{% endblock %}
+{% block page_title %}Restaurant Tables{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('admin.table_add') }}" class="btn btn-success">+ Add Table</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>#</th><th>Table No</th><th>Capacity</th><th>Location</th><th>Status</th><th>Current Order</th><th>Waiter</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for t in tables %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ t.table_number }}</td>
+        <td>{{ t.capacity }}</td>
+        <td>{{ t.location or '-' }}</td>
+        <td><span class="badge badge-{{ t.status|status_badge }}">{{ t.status }}</span></td>
+        <td>{% if t.current_order_id %}#{{ t.current_order_id }}{% else %}-{% endif %}</td>
+        <td>{{ t.assigned_waiter.full_name if t.assigned_waiter else '-' }}</td>
+        <td>
+          <a href="{{ url_for('admin.table_edit', tid=t.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.table_delete', tid=t.id) }}" data-confirm="Delete this table?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">No tables.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block title %}Payments{% endblock %}
+{% block page_title %}Payments{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>ID</th><th>Order #</th><th>Amount</th><th>Method</th><th>Status</th><th>Reference</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for p in payments %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td><a href="{{ url_for('admin.order_detail', oid=p.order_id) }}">{{ p.order.order_number if p.order else p.order_id }}</a></td>
+        <td>{{ p.amount|currency }}</td>
+        <td>{{ p.method }}</td>
+        <td><span class="badge badge-{{ p.status|status_badge }}">{{ p.status }}</span></td>
+        <td>{{ p.reference or '-' }}</td>
+        <td>{{ p.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="empty-state">No payments.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "manager/base.html" %}
+{% block title %}Manager Dashboard{% endblock %}
+{% block page_title %}Manager Dashboard{% endblock %}
+{% block content %}
+<div class="grid grid-4">
+  <div class="stat-card"><div class="stat-value">{{ today_sales|currency }}</div><div class="stat-label">Today Sales</div></div>
+  <div class="stat-card"><div class="stat-value">{{ today_orders }}</div><div class="stat-label">Today Orders</div></div>
+  <div class="stat-card"><div class="stat-value">{{ tables|length }}</div><div class="stat-label">Tables</div></div>
+  <div class="stat-card"><div class="stat-value">{{ reservations|length }}</div><div class="stat-label">Pending Reservations</div></div>
+</div>
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header"><h3>Recent Orders</h3></div>
+    <div class="card-body table-responsive">
+      <table class="data">
+        <thead><tr><th>#</th><th>Type</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for o in recent_orders %}
+        <tr><td>{{ o.order_number }}</td><td>{{ o.order_type.replace('_',' ').title() }}</td><td>{{ o.total|currency }}</td><td>{{ o.order_status }}</td></tr>
+        {% else %}<tr><td colspan="4" class="empty-state">No orders.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Popular Items</h3></div>
+    <div class="card-body">
+      <ul class="list">
+        {% for p in popular_food %}<li class="d-flex between"><span>{{ p.name }}</span><strong>{{ p.qty }}</strong></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header"><h3>Low Stock</h3></div>
+    <div class="card-body table-responsive">
+      <table class="data">
+        <thead><tr><th>Item</th><th>Qty</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for i in low_stock %}<tr><td>{{ i.name }}</td><td>{{ i.quantity }} {{ i.unit }}</td><td>{{ i.status }}</td></tr>{% else %}<tr><td colspan="3" class="empty-state">All stocked.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Active Staff</h3></div>
+    <div class="card-body">
+      <ul class="list">
+        {% for s in staff %}<li>{{ s.full_name }} <small class="text-muted">({{ s.user.role.display_name if s.user.role else '' }})</small></li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

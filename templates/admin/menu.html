@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+{% block title %}Menu Items{% endblock %}
+{% block page_title %}Menu Items{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="GET" class="d-flex gap-1" style="flex:1;flex-wrap:wrap">
+    <input type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search items..." class="form-control search">
+    <select name="category" class="form-control" style="max-width:200px">
+      <option value="">All Categories</option>
+      {% for c in categories %}<option value="{{ c.id }}" {% if request.args.get('category')|string==c.id|string %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+    </select>
+    <select name="status" class="form-control" style="max-width:160px">
+      <option value="">All Status</option>
+      <option value="active" {% if request.args.get('status')=='active' %}selected{% endif %}>Active</option>
+      <option value="inactive" {% if request.args.get('status')=='inactive' %}selected{% endif %}>Inactive</option>
+    </select>
+    <button class="btn btn-primary">Filter</button>
+  </form>
+  <a href="{{ url_for('admin.menu_add') }}" class="btn btn-success">+ Add Item</a>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Discount</th><th>Final</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for it in items %}
+      <tr>
+        <td><img src="{{ url_for('static', filename=it.image) }}" class="thumb" onerror="this.src='{{ url_for('static', filename='uploads/products/default.png') }}'"></td>
+        <td>{{ it.name }}{% if it.availability=='unavailable' %} <span class="badge badge-danger">Unavailable</span>{% endif %}</td>
+        <td>{{ it.category.name if it.category else '-' }}</td>
+        <td>{{ it.price|currency }}</td>
+        <td>{% if it.discount %}{{ it.discount }}%{% else %}-{% endif %}</td>
+        <td><strong>{{ it.final_price|currency }}</strong></td>
+        <td><span class="badge badge-{{ 'success' if it.status=='active' else 'secondary' }}">{{ it.status }}</span></td>
+        <td>{% if it.featured %}<span class="badge badge-info">Yes</span>{% else %}-{% endif %}</td>
+        <td>
+          <a href="{{ url_for('admin.menu_edit', mid=it.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.menu_delete', mid=it.id) }}" data-confirm="Delete this menu item?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="empty-state">No menu items.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

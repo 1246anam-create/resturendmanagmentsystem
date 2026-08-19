@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if category %}Edit{% else %}Add{% endif %} Category{% endblock %}
+{% block page_title %}{% if category %}Edit Category{% else %}Add Category{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:640px;margin:0 auto">
+  <div class="card-header"><h3>{% if category %}Edit{% else %}Add{% endif %} Category</h3></div>
+  <div class="card-body">
+    <form method="POST" action="" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group"><label>Name *</label><input type="text" name="name" required class="form-control" value="{{ category.name if category else '' }}"></div>
+      <div class="form-group"><label>Description</label><textarea name="description" class="form-control">{{ category.description if category else '' }}</textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Display Order</label><input type="number" name="display_order" class="form-control" value="{{ category.display_order if category else 0 }}"></div>
+        <div class="form-group"><label>Status</label>
+          <select name="status" class="form-control">
+            <option value="active" {% if category and category.status=='active' %}selected{% endif %}>Active</option>
+            <option value="inactive" {% if category and category.status=='inactive' %}selected{% endif %}>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Image</label><input type="file" name="image" class="form-control" accept="image/*"></div>
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a href="{{ url_for('admin.categories') }}" class="btn btn-outline">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

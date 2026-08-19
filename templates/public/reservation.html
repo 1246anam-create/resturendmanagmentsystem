@@ -1,0 +1,56 @@
+{% extends "public/base.html" %}
+{% block title %}Reservation{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-head"><h2>Book a Table</h2><p>Reserve your spot for a delightful dining experience</p></div>
+  <div class="card" style="max-width:620px;margin:0 auto">
+    <div class="card-body">
+      <form method="POST" action="{{ url_for('public.reservation') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" required class="form-control" value="{{ current_user.customer_profile.full_name if current_user.is_authenticated and current_user.customer_profile else '' }}">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" name="phone" class="form-control" value="{{ current_user.customer_profile.phone if current_user.is_authenticated and current_user.customer_profile else '' }}">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" value="{{ current_user.email if current_user.is_authenticated else '' }}">
+          </div>
+          <div class="form-group">
+            <label>Number of Guests</label>
+            <input type="number" name="guests" min="1" value="2" class="form-control">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="date" required class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Time</label>
+            <input type="time" name="time" value="19:00" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Preferred Table (optional)</label>
+          <select name="table_id" class="form-control">
+            <option value="">No preference</option>
+            {% for t in tables %}<option value="{{ t.id }}">Table {{ t.table_number }} ({{ t.capacity }} seats)</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Special Requests</label>
+          <textarea name="special_request" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">Submit Reservation</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

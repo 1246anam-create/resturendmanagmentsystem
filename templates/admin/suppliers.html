@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}Suppliers{% endblock %}
+{% block page_title %}Suppliers{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('admin.supplier_add') }}" class="btn btn-success">+ Add Supplier</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for s in suppliers %}
+      <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.company or '-' }}</td>
+        <td>{{ s.phone or '-' }}</td>
+        <td>{{ s.email or '-' }}</td>
+        <td><span class="badge badge-{{ s.payment_status|status_badge }}">{{ s.payment_status }}</span></td>
+        <td><span class="badge badge-{{ 'success' if s.status=='active' else 'secondary' }}">{{ s.status }}</span></td>
+        <td>
+          <a href="{{ url_for('admin.supplier_edit', sid=s.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.supplier_delete', sid=s.id) }}" data-confirm="Delete this supplier?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="empty-state">No suppliers.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

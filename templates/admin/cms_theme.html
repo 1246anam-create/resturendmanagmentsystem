@@ -1,0 +1,62 @@
+{% extends "admin/base.html" %}
+{% block title %}Theme Settings{% endblock %}
+{% block page_title %}Theme & Appearance{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Primary Color</label>
+        <input type="color" name="primary_color" class="form-control" value="{{ theme.primary_color if theme else '#c8962a' }}">
+      </div>
+      <div class="form-group">
+        <label>Secondary Color</label>
+        <input type="color" name="secondary_color" class="form-control" value="{{ theme.secondary_color if theme else '#1f1d1b' }}">
+      </div>
+      <div class="form-group">
+        <label>Accent Color</label>
+        <input type="color" name="accent_color" class="form-control" value="{{ theme.accent_color if theme else '#e07b39' }}">
+      </div>
+      <div class="form-group">
+        <label>Background Color</label>
+        <input type="color" name="background_color" class="form-control" value="{{ theme.background_color if theme else '#faf7f0' }}">
+      </div>
+      <div class="form-group">
+        <label>Surface Color</label>
+        <input type="color" name="surface_color" class="form-control" value="{{ theme.surface_color if theme else '#ffffff' }}">
+      </div>
+      <div class="form-group">
+        <label>Text Color</label>
+        <input type="color" name="text_color" class="form-control" value="{{ theme.text_color if theme else '#1f1d1b' }}">
+      </div>
+      <div class="form-group">
+        <label>Muted Text Color</label>
+        <input type="color" name="muted_text_color" class="form-control" value="{{ theme.muted_text_color if theme else '#6b6b6b' }}">
+      </div>
+      <div class="form-group">
+        <label>Button Color</label>
+        <input type="color" name="button_color" class="form-control" value="{{ theme.button_color if theme else '#c8962a' }}">
+      </div>
+      <div class="form-group">
+        <label>Font Family</label>
+        <input type="text" name="font_family" class="form-control" value="{{ theme.font_family if theme else "'Poppins', sans-serif" }}">
+      </div>
+      <div class="form-group">
+        <label>Border Radius</label>
+        <input type="text" name="border_radius" class="form-control" value="{{ theme.border_radius if theme else '12px' }}">
+      </div>
+      <div class="form-group">
+        <label>Default Mode</label>
+        <select name="mode" class="form-control">
+          <option value="light" {% if theme and theme.mode=='light' %}selected{% endif %}>Light</option>
+          <option value="dark" {% if theme and theme.mode=='dark' %}selected{% endif %}>Dark</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save Theme</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

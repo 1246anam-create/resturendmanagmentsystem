@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% block title %}Staff{% endblock %}
+{% block page_title %}Staff Management{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="GET" class="d-flex gap-1" style="flex:1;flex-wrap:wrap">
+    <input type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search staff..." class="form-control search">
+    <select name="role" class="form-control" style="max-width:200px">
+      <option value="">All Roles</option>
+      {% for r in roles %}<option value="{{ r.name }}" {% if request.args.get('role')==r.name %}selected{% endif %}>{{ r.display_name }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-primary">Search</button>
+  </form>
+  <a href="{{ url_for('admin.staff_add') }}" class="btn btn-success">+ Add Staff</a>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Photo</th><th>Name</th><th>Username</th><th>Email</th><th>Phone</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for s in staff %}
+      <tr>
+        <td><img src="{{ url_for('static', filename=s.profile_image) }}" class="thumb" onerror="this.src='{{ url_for('static', filename='uploads/staff/default.png') }}'"></td>
+        <td>{{ s.full_name }}</td>
+        <td>{{ s.user.username }}</td>
+        <td>{{ s.user.email }}</td>
+        <td>{{ s.phone or '-' }}</td>
+        <td>{{ s.user.role.display_name if s.user.role else '-' }}</td>
+        <td><span class="badge badge-{{ s.user.status|status_badge }}">{{ s.user.status }}</span></td>
+        <td>
+          <a href="{{ url_for('admin.staff_edit', sid=s.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-warning" data-action data-url="{{ url_for('admin.staff_toggle', sid=s.id) }}" data-reload="true">Toggle</button>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.staff_delete', sid=s.id) }}" data-confirm="Delete this staff member?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">No staff found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

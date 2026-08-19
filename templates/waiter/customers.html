@@ -1,0 +1,23 @@
+{% extends "waiter/base.html" %}
+{% block title %}Customers{% endblock %}
+{% block page_title %}Customers{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Photo</th><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th></tr></thead>
+      <tbody>
+      {% for c in customers %}
+      <tr>
+        <td><img src="{{ url_for('static', filename=c.profile_image) }}" class="thumb" onerror="this.src='{{ url_for('static', filename='uploads/customers/default.png') }}'"></td>
+        <td>{{ c.full_name }}</td>
+        <td>{{ c.user.email if c.user else '-' }}</td>
+        <td>{{ c.phone or '-' }}</td>
+        <td>{{ c.orders|length }}</td>
+      </tr>
+      {% else %}<tr><td colspan="5" class="empty-state">No customers.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

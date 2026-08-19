@@ -1,0 +1,163 @@
+{% extends "public/base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+  <h1>{{ header.restaurant_name if header else 'Welcome to Our Restaurant' }}</h1>
+  <p>{{ restaurant.name if restaurant else 'Experience fine dining with a modern twist. Fresh ingredients, passionate chefs, unforgettable flavors.' }}</p>
+  <div class="actions">
+    <a href="{{ url_for('public.menu') }}" class="btn btn-accent btn-lg">View Menu</a>
+    <a href="{{ url_for('public.reservation') }}" class="btn btn-light btn-lg">Book a Table</a>
+  </div>
+</section>
+
+<!-- Banners -->
+{% if banners %}
+<section class="section" style="padding-top:2rem;padding-bottom:1rem">
+  <div class="grid-auto">
+    {% for b in banners %}
+    <div class="card" style="overflow:hidden">
+      {% if b.image %}<img src="{{ url_for('static', filename=b.image) }}" alt="{{ b.title }}" style="width:100%;height:160px;object-fit:cover">{% endif %}
+      <div class="card-body">
+        <h4>{{ b.title }}</h4>
+        <p class="small text-muted">{{ b.description }}</p>
+        <a href="{{ b.button_link }}" class="btn btn-sm btn-primary">{{ b.button_text }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Categories -->
+{% if categories %}
+<section class="section" style="padding-top:1rem">
+  <div class="section-head"><h2>Our Categories</h2><p>Explore our diverse menu categories</p></div>
+  <div class="grid-auto">
+    {% for c in categories %}
+    <a href="{{ url_for('public.menu', category=c.id) }}" class="menu-card">
+      <div class="img">{% if c.image %}<img src="{{ url_for('static', filename=c.image) }}" alt="{{ c.name }}">{% else %}🍴{% endif %}</div>
+      <div class="body"><h4>{{ c.name }}</h4><p class="small text-muted">{{ c.description or '' }}</p></div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Featured -->
+{% if featured %}
+<section class="section">
+  <div class="section-head"><h2>Featured Dishes</h2><p>Chef's special selections</p></div>
+  <div class="grid-auto">
+    {% for item in featured %}
+    <div class="menu-card">
+      <div class="img">{% if item.image %}<img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">{% else %}🍽️{% endif %}</div>
+      <div class="body">
+        <h4>{{ item.name }}</h4>
+        <p class="small text-muted">{{ item.description or '' }}</p>
+        <div class="price">{{ item.final_price|currency }}{% if item.discount %}<span class="old-price">{{ item.price|currency }}</span>{% endif %}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Services -->
+{% if services %}
+<section class="section" style="background:var(--surface)">
+  <div class="section-head"><h2>What We Offer</h2><p>Services designed for a perfect experience</p></div>
+  <div class="grid-3">
+    {% for s in services %}
+    <div class="service-card">
+      <div class="ic">{% if s.image %}<img src="{{ url_for('static', filename=s.image) }}" style="width:48px;height:48px;border-radius:10px;object-fit:cover">{% else %}⚙️{% endif %}</div>
+      <h4>{{ s.title }}</h4>
+      <p class="small text-muted">{{ s.description }}</p>
+      <a href="{{ s.button_link }}" class="btn btn-sm btn-outline">{{ s.button_text }}</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Popular -->
+{% if popular %}
+<section class="section">
+  <div class="section-head"><h2>Most Loved</h2><p>Customer favorites</p></div>
+  <div class="grid-auto">
+    {% for item in popular %}
+    <div class="menu-card">
+      <div class="img">{% if item.image %}<img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">{% else %}🍽️{% endif %}</div>
+      <div class="body">
+        <h4>{{ item.name }}</h4>
+        <div class="price">{{ item.final_price|currency }} {% if item.rating %}<span class="badge badge-warning">★ {{ item.rating }}</span>{% endif %}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Offers -->
+{% if offers %}
+<section class="section" style="background:var(--surface)">
+  <div class="section-head"><h2>Special Offers</h2><p>Limited time deals</p></div>
+  <div class="grid-auto">
+    {% for o in offers %}
+    <div class="card" style="overflow:hidden">
+      {% if o.image %}<img src="{{ url_for('static', filename=o.image) }}" style="width:100%;height:150px;object-fit:cover">{% endif %}
+      <div class="card-body">
+        <h4>{{ o.name }}</h4>
+        <p class="small text-muted">{{ o.description }}</p>
+        <span class="badge badge-success">{{ o.discount_value }}{% if o.discount_type=='percentage' %}%{% else %} off{% endif %}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- About snippet -->
+{% if about %}
+<section class="section">
+  <div class="grid-2" style="align-items:center">
+    <div>
+      <h2>{{ about.story_title or 'Our Story' }}</h2>
+      <p class="text-muted">{{ about.story or '' }}</p>
+      <a href="{{ url_for('public.about') }}" class="btn btn-primary">Learn More</a>
+    </div>
+    <div>
+      <div class="grid-2">
+        <div class="stat-card"><div class="info"><div class="value">{{ about.stat1_value }}</div><div class="label">{{ about.stat1_label }}</div></div></div>
+        <div class="stat-card"><div class="info"><div class="value">{{ about.stat2_value }}</div><div class="label">{{ about.stat2_label }}</div></div></div>
+        <div class="stat-card"><div class="info"><div class="value">{{ about.stat3_value }}</div><div class="label">{{ about.stat3_label }}</div></div></div>
+        <div class="stat-card"><div class="info"><div class="value">{{ about.stat4_value }}</div><div class="label">{{ about.stat4_label }}</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Reviews -->
+{% if reviews %}
+<section class="section" style="background:var(--surface)">
+  <div class="section-head"><h2>What Customers Say</h2></div>
+  <div class="grid-3">
+    {% for r in reviews %}
+    <div class="card"><div class="card-body">
+      <div class="fw-bold">{{ r.customer.full_name if r.customer else 'Guest' }}</div>
+      <div class="badge badge-warning">★ {{ r.rating }}/5</div>
+      <p class="small mt-1">{{ r.comment }}</p>
+    </div></div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="hero" style="margin-top:2rem">
+  <h2>Ready to dine with us?</h2>
+  <p>Reserve your table now and enjoy an unforgettable experience.</p>
+  <a href="{{ url_for('public.reservation') }}" class="btn btn-light btn-lg">Book a Table</a>
+</section>
+{% endblock %}

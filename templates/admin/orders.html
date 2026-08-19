@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}All Orders{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="GET" class="d-flex gap-1" style="flex:1;flex-wrap:wrap">
+    <select name="status" class="form-control" style="max-width:180px">
+      <option value="">All Status</option>
+      {% for s in ['new','accepted','preparing','ready','served','completed','cancelled'] %}<option value="{{ s }}" {% if request.args.get('status')==s %}selected{% endif %}>{{ s.title() }}</option>{% endfor %}
+    </select>
+    <select name="type" class="form-control" style="max-width:180px">
+      <option value="">All Types</option>
+      <option value="dine_in" {% if request.args.get('type')=='dine_in' %}selected{% endif %}>Dine In</option>
+      <option value="takeaway" {% if request.args.get('type')=='takeaway' %}selected{% endif %}>Takeaway</option>
+      <option value="delivery" {% if request.args.get('type')=='delivery' %}selected{% endif %}>Delivery</option>
+    </select>
+    <button class="btn btn-primary">Filter</button>
+  </form>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Order #</th><th>Type</th><th>Customer</th><th>Table</th><th>Total</th><th>Order Status</th><th>Payment</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+      <tr>
+        <td><a href="{{ url_for('admin.order_detail', oid=o.id) }}">{{ o.order_number }}</a></td>
+        <td>{{ o.order_type.replace('_',' ').title() }}</td>
+        <td>{{ o.customer.full_name if o.customer else (o.customer_name if o.customer_name else 'Walk-in') }}</td>
+        <td>{{ o.table.table_number if o.table else '-' }}</td>
+        <td>{{ o.total|currency }}</td>
+        <td><span class="badge badge-{{ o.order_status|status_badge }}">{{ o.order_status }}</span></td>
+        <td><span class="badge badge-{{ 'success' if o.payment_status=='paid' else 'warning' }}">{{ o.payment_status }}</span></td>
+        <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>
+          <a href="{{ url_for('admin.order_detail', oid=o.id) }}" class="btn btn-sm btn-outline">View</a>
+          <a href="{{ url_for('admin.pay_order', oid=o.id) }}" class="btn btn-sm btn-primary">Pay</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="empty-state">No orders.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

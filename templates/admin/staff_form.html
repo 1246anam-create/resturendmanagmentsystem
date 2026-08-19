@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if staff %}Edit{% else %}Add{% endif %} Staff{% endblock %}
+{% block page_title %}{% if staff %}Edit Staff{% else %}Add Staff{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:720px;margin:0 auto">
+  <div class="card-header"><h3>{% if staff %}Edit{% else %}Add New{% endif %} Staff Member</h3></div>
+  <div class="card-body">
+    <form method="POST" action="" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-row">
+        <div class="form-group"><label>Full Name *</label><input type="text" name="full_name" required class="form-control" value="{{ staff.full_name if staff else '' }}"></div>
+        <div class="form-group"><label>Username *</label><input type="text" name="username" required class="form-control" value="{{ staff.user.username if staff else '' }}" {% if staff %}readonly{% endif %}></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email *</label><input type="email" name="email" required class="form-control" value="{{ staff.user.email if staff else '' }}"></div>
+        <div class="form-group"><label>Phone</label><input type="text" name="phone" class="form-control" value="{{ staff.phone if staff else '' }}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Role *</label>
+          <select name="role_id" class="form-control" required>
+            <option value="">Select Role</option>
+            {% for r in roles %}<option value="{{ r.id }}" {% if staff and staff.user.role_id==r.id %}selected{% endif %}>{{ r.display_name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label>Status</label>
+          <select name="status" class="form-control">
+            <option value="active" {% if staff and staff.user.status=='active' %}selected{% endif %}>Active</option>
+            <option value="inactive" {% if staff and staff.user.status=='inactive' %}selected{% endif %}>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Joining Date</label><input type="date" name="joining_date" class="form-control" value="{{ staff.joining_date if staff and staff.joining_date else '' }}"></div>
+        <div class="form-group"><label>Emergency Contact</label><input type="text" name="emergency_contact" class="form-control" value="{{ staff.emergency_contact if staff else '' }}"></div>
+      </div>
+      <div class="form-group"><label>Address</label><textarea name="address" class="form-control">{{ staff.address if staff else '' }}</textarea></div>
+      <div class="form-group"><label>Notes</label><textarea name="notes" class="form-control">{{ staff.notes if staff else '' }}</textarea></div>
+      <div class="form-group"><label>Profile Image</label><input type="file" name="profile_image" class="form-control" accept="image/*"></div>
+      {% if not staff %}<div class="form-group"><label>Password *</label><input type="password" name="password" required minlength="6" class="form-control"></div>{% endif %}
+      {% if staff %}<div class="form-group"><label>New Password (leave blank to keep)</label><input type="password" name="password" minlength="6" class="form-control"></div>{% endif %}
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a href="{{ url_for('admin.staff') }}" class="btn btn-outline">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

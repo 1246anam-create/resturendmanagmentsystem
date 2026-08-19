@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if service %}Edit Service{% else %}Add Service{% endif %}{% endblock %}
+{% block page_title %}{% if service %}Edit Service{% else %}Add Service{% endif %}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" class="form-control" value="{{ service.title if service else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label>Icon (FontAwesome name)</label>
+        <input type="text" name="icon" class="form-control" value="{{ service.icon if service else 'utensils' }}">
+      </div>
+      <div class="form-group">
+        <label>Display Order</label>
+        <input type="number" name="display_order" class="form-control" value="{{ service.display_order if service else 0 }}">
+      </div>
+      <div class="form-group">
+        <label>Button Text</label>
+        <input type="text" name="button_text" class="form-control" value="{{ service.button_text if service else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Button Link</label>
+        <input type="text" name="button_link" class="form-control" value="{{ service.button_link if service else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status" class="form-control">
+          <option value="active" {% if not service or service.status=='active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if service and service.status=='inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Description</label>
+        <textarea name="description" class="form-control" rows="3">{{ service.description if service else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Image</label>
+        {% if service and service.image %}<img src="{{ url_for('static', filename=service.image) }}" class="thumb-lg"><br>{% endif %}
+        <input type="file" name="image" class="form-control" accept="image/*">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('cms.services') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

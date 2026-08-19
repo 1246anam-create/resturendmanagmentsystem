@@ -1,0 +1,32 @@
+{% extends "chef/base.html" %}
+{% block title %}Kitchen Display{% endblock %}
+{% block page_title %}Kitchen Display System{% endblock %}
+{% block content %}
+<div class="kds-columns">
+  {% for st in statuses %}
+  <div class="kds-col kds-{{ st }}">
+    <div class="kds-col-head">{{ st.title() }}</div>
+    {% for o in columns[st] %}
+    <div class="kds-card">
+      <div class="kds-card-head d-flex between">
+        <strong>{{ o.order_number }}</strong>
+        <span class="badge badge-info">{{ o.order_type.replace('_',' ').title() }}</span>
+      </div>
+      <div class="kds-items">
+        {% for it in o.items %}
+        <div class="kds-item">{{ it.quantity }}x {{ it.menu_item.name if it.menu_item else 'Item' }}{% if it.special_instructions %} <small>({{ it.special_instructions }})</small>{% endif %}</div>
+        {% endfor %}
+      </div>
+      <div class="kds-actions">
+        {% if st=='new' %}<button class="btn btn-sm btn-primary" data-action data-url="{{ url_for('chef.order_action', oid=o.id, action='accept') }}" data-reload="true">Accept</button>{% endif %}
+        {% if st=='accepted' %}<button class="btn btn-sm btn-warning" data-action data-url="{{ url_for('chef.order_action', oid=o.id, action='prepare') }}" data-reload="true">Preparing</button>{% endif %}
+        {% if st=='preparing' %}<button class="btn btn-sm btn-success" data-action data-url="{{ url_for('chef.order_action', oid=o.id, action='ready') }}" data-reload="true">Ready</button>{% endif %}
+      </div>
+    </div>
+    {% else %}
+    <p class="empty-state">No orders.</p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

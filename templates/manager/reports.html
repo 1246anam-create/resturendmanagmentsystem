@@ -1,0 +1,22 @@
+{% extends "manager/base.html" %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Reports{% endblock %}
+{% block content %}
+<div class="grid grid-3">
+  <div class="stat-card"><div class="stat-value">{{ revenue|currency }}</div><div class="stat-label">Revenue</div></div>
+  <div class="stat-card"><div class="stat-value">{{ order_count }}</div><div class="stat-label">Orders</div></div>
+  <div class="stat-card"><div class="stat-value">{{ orders|length }}</div><div class="stat-label">Records</div></div>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>#</th><th>Type</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+      <tr><td>{{ o.order_number }}</td><td>{{ o.order_type.replace('_',' ').title() }}</td><td>{{ o.customer.full_name if o.customer else 'Walk-in' }}</td><td>{{ o.total|currency }}</td><td>{{ o.order_status }}</td><td>{{ o.created_at.strftime('%Y-%m-%d') }}</td></tr>
+      {% else %}<tr><td colspan="6" class="empty-state">No orders.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

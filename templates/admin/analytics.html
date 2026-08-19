@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block content %}
+<div class="grid grid-4">
+  <div class="stat-card"><div class="stat-value">{{ total_tables }}</div><div class="stat-label">Total Tables</div></div>
+  <div class="stat-card"><div class="stat-value">{{ occupied }}</div><div class="stat-label">Occupied</div></div>
+  <div class="stat-card"><div class="stat-value">{{ available }}</div><div class="stat-label">Available</div></div>
+  <div class="stat-card"><div class="stat-value">{{ reserved }}</div><div class="stat-label">Reserved</div></div>
+</div>
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header"><h3>Monthly Revenue</h3></div>
+    <div class="card-body"><div class="chart-box"><canvas id="monthChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Order Status</h3></div>
+    <div class="card-body"><div class="chart-box"><canvas id="statusChart"></canvas></div></div>
+  </div>
+</div>
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header"><h3>Inventory Status</h3></div>
+    <div class="card-body"><div class="chart-box"><canvas id="invChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Out of Service Tables</h3></div>
+    <div class="card-body"><p class="stat-value">{{ oos }}</p></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('monthChart'), {
+  type: 'line',
+  data: { labels: {{ months|tojson }}, datasets: [{ label: 'Revenue', data: {{ values|tojson }}, borderColor: 'var(--primary)', backgroundColor: 'rgba(200,150,42,0.15)', fill: true, tension: 0.3 }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: { labels: {{ status_labels|tojson }}, datasets: [{ data: {{ status_values|tojson }}, backgroundColor: ['#c8962a','#e07b39','#1f1d1b','#6b6b6b','#2e7d32'] }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+new Chart(document.getElementById('invChart'), {
+  type: 'bar',
+  data: { labels: {{ inv_labels|tojson }}, datasets: [{ label: 'Items', data: {{ inv_values|tojson }}, backgroundColor: 'var(--accent)' }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+</script>
+{% endblock %}

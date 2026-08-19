@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" {% if theme and theme.mode == 'dark' %}data-theme-default="dark"{% endif %}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Manager{% endblock %} | {{ restaurant.name if restaurant else 'Restaurant' }}</title>
+  <link rel="icon" href="{{ url_for('static', filename=(restaurant.favicon if restaurant and restaurant.favicon else 'favicon/favicon.ico')) }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
+  {% if theme %}
+  <style>
+    :root {
+      --primary: {{ theme.primary_color }}; --secondary: {{ theme.secondary_color }};
+      --accent: {{ theme.accent_color }}; --bg: {{ theme.background_color }};
+      --surface: {{ theme.surface_color }}; --text: {{ theme.text_color }};
+      --muted: {{ theme.muted_text_color }}; --btn: {{ theme.button_color }};
+      --font: {{ theme.font_family }}; --radius: {{ theme.border_radius }};
+    }
+  </style>
+  {% endif %}
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        {% if header and header.logo %}<img src="{{ url_for('static', filename=header.logo) }}" alt="logo">{% endif %}
+        <span>{{ header.restaurant_name if header else 'Restaurant' }}</span>
+      </div>
+      <nav class="nav">
+        <a href="{{ url_for('manager.dashboard') }}" class="{% if request.endpoint=='manager.dashboard' %}active{% endif %}"><span class="ic">📊</span> Dashboard</a>
+        <div class="section">Operations</div>
+        <a href="{{ url_for('manager.orders') }}" class="{% if request.endpoint=='manager.orders' %}active{% endif %}"><span class="ic">🧾</span> Orders</a>
+        <a href="{{ url_for('manager.tables') }}" class="{% if request.endpoint=='manager.tables' %}active{% endif %}"><span class="ic">🪑</span> Tables</a>
+        <a href="{{ url_for('manager.reservations') }}" class="{% if request.endpoint=='manager.reservations' %}active{% endif %}"><span class="ic">📅</span> Reservations</a>
+        <a href="{{ url_for('manager.customers') }}" class="{% if request.endpoint=='manager.customers' %}active{% endif %}"><span class="ic">🧑</span> Customers</a>
+        <a href="{{ url_for('manager.inventory') }}" class="{% if request.endpoint=='manager.inventory' %}active{% endif %}"><span class="ic">📦</span> Inventory</a>
+        <a href="{{ url_for('manager.suppliers') }}" class="{% if request.endpoint=='manager.suppliers' %}active{% endif %}"><span class="ic">🏭</span> Suppliers</a>
+        <a href="{{ url_for('manager.purchases') }}" class="{% if request.endpoint=='manager.purchases' %}active{% endif %}"><span class="ic">🛒</span> Purchases</a>
+        <a href="{{ url_for('manager.staff') }}" class="{% if request.endpoint=='manager.staff' %}active{% endif %}"><span class="ic">👥</span> Staff</a>
+        <div class="section">Insights</div>
+        <a href="{{ url_for('manager.reports') }}" class="{% if request.endpoint=='manager.reports' %}active{% endif %}"><span class="ic">📈</span> Reports</a>
+        <a href="{{ url_for('admin.notifications') }}" class="{% if request.endpoint=='admin.notifications' %}active{% endif %}"><span class="ic">🔔</span> Notifications</a>
+      </nav>
+      <div class="user-box">
+        {% if current_user.staff_profile %}<img src="{{ url_for('static', filename=current_user.staff_profile.profile_image) }}" alt="">{% endif %}
+        <div class="meta">
+          <div class="name">{{ current_user.staff_profile.full_name if current_user.staff_profile else current_user.username }}</div>
+          <div class="role">{{ current_user.role.name if current_user.role else '' }}</div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div class="left">
+          <button class="hamburger" data-sidebar-toggle>☰</button>
+          <span class="page-title">{% block page_title %}Dashboard{% endblock %}</span>
+        </div>
+        <div class="right">
+          <button class="theme-toggle" data-theme-toggle>🌓</button>
+          <div class="notif-wrap">
+            <button class="notif-bell" data-notif-bell>🔔<span class="notif-count" data-notif-count style="display:none">0</span></button>
+            <div class="notif-dropdown"><div data-notif-list></div>
+              <div style="padding:.6rem 1rem;text-align:center"><a href="{{ url_for('admin.notifications') }}">View all</a></div>
+            </div>
+          </div>
+          <a href="{{ url_for('auth.change_password') }}" class="btn btn-sm btn-outline">🔑</a>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-outline">Logout</a>
+        </div>
+      </header>
+      <main class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}<div class="flash-messages">
+            {% for cat, msg in messages %}<div class="alert alert-{{ cat }}">{{ msg }}</div>{% endfor %}
+          </div>{% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

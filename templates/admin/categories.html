@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}Categories{% endblock %}
+{% block page_title %}Menu Categories{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('admin.category_add') }}" class="btn btn-success">+ Add Category</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Image</th><th>Name</th><th>Slug</th><th>Order</th><th>Status</th><th>Items</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for c in categories %}
+      <tr>
+        <td>{% if c.image %}<img src="{{ url_for('static', filename=c.image) }}" class="thumb">{% else %}—{% endif %}</td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.slug }}</td>
+        <td>{{ c.display_order }}</td>
+        <td><span class="badge badge-{{ c.status|status_badge }}">{{ c.status }}</span></td>
+        <td>{{ c.items.count() }}</td>
+        <td>
+          <a href="{{ url_for('admin.category_edit', cid=c.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.category_delete', cid=c.id) }}" data-confirm="Delete this category?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="empty-state">No categories.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

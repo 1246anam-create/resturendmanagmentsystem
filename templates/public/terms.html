@@ -1,0 +1,15 @@
+{% extends "public/base.html" %}
+{% block title %}Terms of Service{% endblock %}
+{% block content %}
+<section class="section" style="max-width:800px">
+  <h2>Terms of Service</h2>
+  <p class="text-muted">By using our website and services, you agree to the following terms.</p>
+  <h4>Reservations & Orders</h4>
+  <p>Reservations are subject to confirmation. Orders placed are processed based on availability.</p>
+  <h4>Payments</h4>
+  <p>All payments are final. Refunds are handled per our refund policy.</p>
+  <h4>Conduct</h4>
+  <p>Users must provide accurate information and treat staff and other guests with respect.</p>
+  <p class="small text-muted mt-2">Last updated: {{ now.strftime('%Y-%m-%d') if now else '' }}</p>
+</section>
+{% endblock %}

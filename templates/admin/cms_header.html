@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+{% block title %}Header Settings{% endblock %}
+{% block page_title %}Website Header{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Restaurant Name</label>
+        <input type="text" name="restaurant_name" class="form-control" value="{{ header.restaurant_name if header else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Contact Phone</label>
+        <input type="text" name="contact_phone" class="form-control" value="{{ header.contact_phone if header else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input type="text" name="contact_email" class="form-control" value="{{ header.contact_email if header else '' }}">
+      </div>
+      <div class="form-group">
+        <label>CTA Button Text</label>
+        <input type="text" name="cta_text" class="form-control" value="{{ header.cta_text if header else '' }}">
+      </div>
+      <div class="form-group">
+        <label>CTA Button Link</label>
+        <input type="text" name="cta_link" class="form-control" value="{{ header.cta_link if header else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Show Reservation Button</label>
+        <select name="show_reservation_button" class="form-control">
+          <option value="1" {% if header and header.show_reservation_button %}selected{% endif %}>Yes</option>
+          <option value="0" {% if header and not header.show_reservation_button %}selected{% endif %}>No</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Logo</label>
+        {% if header and header.logo %}<img src="{{ url_for('static', filename=header.logo) }}" class="thumb-lg" onerror="this.src='{{ url_for('static', filename='uploads/logo/logo.png') }}'"><br>{% endif %}
+        <input type="file" name="logo" class="form-control" accept="image/*">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

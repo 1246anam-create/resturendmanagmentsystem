@@ -1,0 +1,15 @@
+{% extends "public/base.html" %}
+{% block title %}Privacy Policy{% endblock %}
+{% block content %}
+<section class="section" style="max-width:800px">
+  <h2>Privacy Policy</h2>
+  <p class="text-muted">We respect your privacy. This policy explains how we collect, use, and protect your information when you use our website and services.</p>
+  <h4>Information We Collect</h4>
+  <p>We collect information you provide directly (name, email, phone, reservations) and usage data to improve our services.</p>
+  <h4>How We Use Information</h4>
+  <p>To process reservations, fulfill orders, send notifications, and enhance your dining experience.</p>
+  <h4>Data Security</h4>
+  <p>We implement industry-standard measures to protect your personal data.</p>
+  <p class="small text-muted mt-2">For questions, contact {{ restaurant.email if restaurant and restaurant.email else 'us' }}.</p>
+</section>
+{% endblock %}

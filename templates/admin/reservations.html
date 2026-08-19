@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block title %}Reservations{% endblock %}
+{% block page_title %}Reservations{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>ID</th><th>Customer</th><th>Phone</th><th>Date</th><th>Time</th><th>Guests</th><th>Table</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for r in reservations %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.customer.full_name if r.customer else (r.customer_name or '-') }}</td>
+        <td>{{ r.phone or '-' }}</td>
+        <td>{{ r.reservation_date.strftime('%Y-%m-%d') if r.reservation_date else '-' }}</td>
+        <td>{{ r.reservation_time.strftime('%H:%M') if r.reservation_time else '-' }}</td>
+        <td>{{ r.guests }}</td>
+        <td>{{ r.table.table_number if r.table else 'Any' }}</td>
+        <td><span class="badge badge-{{ r.status|status_badge }}">{{ r.status }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.reservation_status', rid=r.id) }}" class="d-flex gap-1" style="display:inline-flex">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+              <option value="pending" {% if r.status=='pending' %}selected{% endif %}>Pending</option>
+              <option value="confirmed" {% if r.status=='confirmed' %}selected{% endif %}>Confirmed</option>
+              <option value="completed" {% if r.status=='completed' %}selected{% endif %}>Completed</option>
+              <option value="cancelled" {% if r.status=='cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="empty-state">No reservations.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

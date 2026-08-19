@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if table %}Edit Table{% else %}Add Table{% endif %}{% endblock %}
+{% block page_title %}{% if table %}Edit Table{% else %}Add Table{% endif %}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Table Number *</label>
+        <input type="text" name="table_number" class="form-control" value="{{ table.table_number if table else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label>Capacity *</label>
+        <input type="number" name="capacity" class="form-control" value="{{ table.capacity if table else 2 }}" required>
+      </div>
+      <div class="form-group">
+        <label>Location</label>
+        <select name="location" class="form-control">
+          <option value="indoor" {% if not table or table.location=='indoor' %}selected{% endif %}>Indoor</option>
+          <option value="outdoor" {% if table and table.location=='outdoor' %}selected{% endif %}>Outdoor</option>
+          <option value="vip" {% if table and table.location=='vip' %}selected{% endif %}>VIP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status" class="form-control">
+          <option value="available" {% if not table or table.status=='available' %}selected{% endif %}>Available</option>
+          <option value="occupied" {% if table and table.status=='occupied' %}selected{% endif %}>Occupied</option>
+          <option value="reserved" {% if table and table.status=='reserved' %}selected{% endif %}>Reserved</option>
+          <option value="out_of_service" {% if table and table.status=='out_of_service' %}selected{% endif %}>Out of Service</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('admin.tables') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

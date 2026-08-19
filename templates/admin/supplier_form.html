@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if supplier %}Edit Supplier{% else %}Add Supplier{% endif %}{% endblock %}
+{% block page_title %}{% if supplier %}Edit Supplier{% else %}Add Supplier{% endif %}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Name *</label>
+        <input type="text" name="name" class="form-control" value="{{ supplier.name if supplier else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" name="company" class="form-control" value="{{ supplier.company if supplier else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" class="form-control" value="{{ supplier.phone if supplier else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" value="{{ supplier.email if supplier else '' }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Address</label>
+        <textarea name="address" class="form-control" rows="2">{{ supplier.address if supplier else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Products Supplied</label>
+        <textarea name="products" class="form-control" rows="2">{{ supplier.products if supplier else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Payment Status</label>
+        <select name="payment_status" class="form-control">
+          <option value="paid" {% if not supplier or supplier.payment_status=='paid' %}selected{% endif %}>Paid</option>
+          <option value="pending" {% if supplier and supplier.payment_status=='pending' %}selected{% endif %}>Pending</option>
+          <option value="partial" {% if supplier and supplier.payment_status=='partial' %}selected{% endif %}>Partial</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status" class="form-control">
+          <option value="active" {% if not supplier or supplier.status=='active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if supplier and supplier.status=='inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('admin.suppliers') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

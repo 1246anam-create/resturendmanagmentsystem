@@ -1,0 +1,50 @@
+{% extends "customer/base.html" %}
+{% block title %}Order Detail{% endblock %}
+{% block page_title %}Order {{ order.order_number }}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header d-flex between"><h3>Order Items</h3><span class="badge badge-info">{{ order.order_status }}</span></div>
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
+      <tbody>
+      {% for it in order.items %}<tr><td>{{ it.menu_item.name if it.menu_item else 'Item' }}</td><td>{{ it.quantity }}</td><td>{{ it.unit_price|currency }}</td><td>{{ it.line_total|currency }}</td></tr>{% endfor %}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3" class="text-right">Subtotal</td><td>{{ order.subtotal|currency }}</td></tr>
+        <tr><td colspan="3" class="text-right">Discount</td><td>-{{ order.discount|currency }}</td></tr>
+        <tr><td colspan="3" class="text-right">Tax</td><td>{{ order.tax|currency }}</td></tr>
+        {% if order.delivery_charges %}<tr><td colspan="3" class="text-right">Delivery</td><td>{{ order.delivery_charges|currency }}</td></tr>{% endif %}
+        <tr><td colspan="3" class="text-right"><strong>Total</strong></td><td><strong>{{ order.total|currency }}</strong></td></tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+{% if order.payment_status=='paid' %}
+<form method="POST" action="{{ url_for('customer.add_review') }}" class="card mt-2">
+  <div class="card-header"><h3>Leave a Review</h3></div>
+  <div class="card-body form-grid">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="hidden" name="order_id" value="{{ order.id }}">
+    <div class="form-group">
+      <label>Menu Item</label>
+      <select name="menu_item_id" class="form-control">
+        <option value="">General</option>
+        {% for it in order.items %}{% if it.menu_item %}<option value="{{ it.menu_item.id }}">{{ it.menu_item.name }}</option>{% endif %}{% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Rating</label>
+      <select name="rating" class="form-control">
+        <option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option>
+      </select>
+    </div>
+    <div class="form-group" style="grid-column:1/-1">
+      <label>Comment</label>
+      <textarea name="comment" class="form-control" rows="2"></textarea>
+    </div>
+    <div class="form-group" style="grid-column:1/-1"><button class="btn btn-primary">Submit Review</button></div>
+  </div>
+</form>
+{% endif %}
+{% endblock %}

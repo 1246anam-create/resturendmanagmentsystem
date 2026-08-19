@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block title %}Roles & Permissions{% endblock %}
+{% block page_title %}Roles & Permissions{% endblock %}
+{% block content %}
+<div class="grid-auto">
+  {% for role in roles %}
+  <div class="card">
+    <div class="card-header"><h3>{{ role.display_name }}</h3>{% if role.is_system %}<span class="badge badge-primary">System</span>{% endif %}</div>
+    <div class="card-body">
+      <p class="small text-muted">{{ role.description }}</p>
+      <form method="POST" action="{{ url_for('admin.role_permissions_update', rid=role.id) }}" data-ajax data-reload="true">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div style="max-height:240px;overflow-y:auto">
+          {% for perm in permissions %}
+          <div class="form-check" style="margin-bottom:.3rem">
+            <input type="checkbox" name="permissions" value="{{ perm.id }}" id="p{{ role.id }}_{{ perm.id }}" {% if perm in role.permissions %}checked{% endif %} {% if role.is_system and role.name=='ADMIN' %}disabled{% endif %}>
+            <label for="p{{ role.id }}_{{ perm.id }}">{{ perm.description }}</label>
+          </div>
+          {% endfor %}
+        </div>
+        {% if not (role.is_system and role.name=='ADMIN') %}
+        <button type="submit" class="btn btn-sm btn-primary mt-2">Save Permissions</button>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

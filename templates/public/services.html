@@ -1,0 +1,19 @@
+{% extends "public/base.html" %}
+{% block title %}Services{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-head"><h2>Our Services</h2><p>Everything we offer for a memorable experience</p></div>
+  <div class="grid-3">
+    {% for s in services %}
+    <div class="service-card">
+      <div class="ic">{% if s.image %}<img src="{{ url_for('static', filename=s.image) }}" style="width:48px;height:48px;border-radius:10px;object-fit:cover">{% else %}⚙️{% endif %}</div>
+      <h4>{{ s.title }}</h4>
+      <p class="small text-muted">{{ s.description }}</p>
+      <a href="{{ s.button_link }}" class="btn btn-sm btn-outline">{{ s.button_text }}</a>
+    </div>
+    {% else %}
+    <div class="empty-state"><div class="ic">⚙️</div><p>No services listed.</p></div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "waiter/base.html" %}
+{% block title %}POS{% endblock %}
+{% block page_title %}Point of Sale{% endblock %}
+{% block content %}
+<div class="pos-layout">
+  <div class="pos-items">
+    <div class="pos-toolbar">
+      <select id="cat-filter" class="form-control" onchange="RMS.filterPos(this.value)">
+        <option value="">All Categories</option>
+        {% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+      </select>
+      <input type="text" id="pos-search" class="form-control search" placeholder="Search..." oninput="RMS.searchPos(this.value)">
+    </div>
+    <div class="pos-grid" id="pos-grid">
+      {% for it in items %}
+      <div class="pos-card" data-cat="{{ it.category_id }}" data-name="{{ it.name|lower }}">
+        <img src="{{ url_for('static', filename=it.image) }}" class="thumb-lg" onerror="this.src='{{ url_for('static', filename='uploads/products/default.png') }}'">
+        <div class="pos-card-body">
+          <strong>{{ it.name }}</strong>
+          <span>{{ it.final_price|currency }}</span>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="RMS.addToCart({{ it.id }}, '{{ it.name }}', {{ it.final_price }})">Add</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="pos-cart">
+    <h3>Order Cart</h3>
+    {% if table %}<p>Table: <strong>{{ table.table_number }}</strong></p>{% endif %}
+    <div id="cart-items"></div>
+    <div class="cart-total d-flex between"><span>Total</span><strong id="cart-total">0.00</strong></div>
+    <form id="pos-form" data-ajax data-url="{{ url_for('waiter.create_order') }}" data-reload="true">
+      <input type="hidden" name="table_id" value="{{ table.id if table else '' }}">
+      <input type="hidden" name="order_type" value="{{ 'dine_in' if table else 'takeaway' }}">
+      <input type="hidden" name="items" id="cart-json">
+      <textarea name="special_instructions" class="form-control" placeholder="Special instructions" rows="2"></textarea>
+      <button type="submit" class="btn btn-success btn-block" onclick="RMS.submitCart()">Place Order</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+RMS.cart = [];
+RMS.addToCart = function(id, name, price){
+  var found = RMS.cart.find(c=>c.id===id);
+  if(found){ found.qty++; } else { RMS.cart.push({id:id, name:name, price:price, qty:1}); }
+  RMS.renderCart();
+};
+RMS.renderCart = function(){
+  var html = ''; var total = 0;
+  RMS.cart.forEach(function(c){
+    total += c.price * c.qty;
+    html += '<div class="cart-row d-flex between"><span>'+c.name+' x'+c.qty+'</span><span>'+c.price.toFixed(2)+'</span></div>';
+  });
+  document.getElementById('cart-items').innerHTML = html || '<p class="empty-state">Cart empty.</p>';
+  document.getElementById('cart-total').textContent = total.toFixed(2);
+  document.getElementById('cart-json').value = JSON.stringify(RMS.cart);
+};
+RMS.submitCart = function(){ document.getElementById('cart-json').value = JSON.stringify(RMS.cart); };
+RMS.filterPos = function(cat){ /* simple filter */ };
+RMS.searchPos = function(q){ /* simple search */ };
+RMS.renderCart();
+</script>
+{% endblock %}

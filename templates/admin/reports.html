@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Sales Reports{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <form method="GET" class="d-flex gap-1" style="flex:1;flex-wrap:wrap">
+    <select name="range_type" class="form-control" style="max-width:200px">
+      <option value="daily" {% if range_type=='daily' %}selected{% endif %}>Daily</option>
+      <option value="weekly" {% if range_type=='weekly' %}selected{% endif %}>Weekly</option>
+      <option value="monthly" {% if range_type=='monthly' %}selected{% endif %}>Monthly</option>
+      <option value="yearly" {% if range_type=='yearly' %}selected{% endif %}>Yearly</option>
+    </select>
+    <input type="date" name="start" class="form-control" value="{{ start or '' }}" style="max-width:200px">
+    <input type="date" name="end" class="form-control" value="{{ end or '' }}" style="max-width:200px">
+    <button class="btn btn-primary">Generate</button>
+  </form>
+</div>
+
+<div class="grid grid-4">
+  <div class="stat-card"><div class="stat-value">{{ revenue|currency }}</div><div class="stat-label">Revenue</div></div>
+  <div class="stat-card"><div class="stat-value">{{ expenses|currency }}</div><div class="stat-label">Expenses</div></div>
+  <div class="stat-card"><div class="stat-value">{{ profit|currency }}</div><div class="stat-label">Profit</div></div>
+  <div class="stat-card"><div class="stat-value">{{ order_count }}</div><div class="stat-label">Orders</div></div>
+</div>
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header"><h3>Revenue Trend</h3></div>
+    <div class="card-body"><div class="chart-box"><canvas id="reportChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Popular Items</h3></div>
+    <div class="card-body"><div class="chart-box"><canvas id="popularChart"></canvas></div></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+const labels = {{ chart_labels|tojson }};
+const values = {{ chart_values|tojson }};
+new Chart(document.getElementById('reportChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ label: 'Revenue', data: values, borderColor: 'var(--primary)', backgroundColor: 'rgba(200,150,42,0.15)', fill: true, tension: 0.3 }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+const pop = {{ popular_food|tojson }};
+new Chart(document.getElementById('popularChart'), {
+  type: 'bar',
+  data: { labels: pop.map(p=>p.name), datasets: [{ label: 'Sold', data: pop.map(p=>p.qty), backgroundColor: 'var(--accent)' }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+</script>
+{% endblock %}

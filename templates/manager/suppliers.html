@@ -1,0 +1,17 @@
+{% extends "manager/base.html" %}
+{% block title %}Suppliers{% endblock %}
+{% block page_title %}Suppliers{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for s in suppliers %}
+      <tr><td>{{ s.name }}</td><td>{{ s.company or '-' }}</td><td>{{ s.phone or '-' }}</td><td>{{ s.email or '-' }}</td><td>{{ s.status }}</td></tr>
+      {% else %}<tr><td colspan="5" class="empty-state">No suppliers.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

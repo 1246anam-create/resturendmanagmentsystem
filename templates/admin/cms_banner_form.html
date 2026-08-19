@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if banner %}Edit Banner{% else %}Add Banner{% endif %}{% endblock %}
+{% block page_title %}{% if banner %}Edit Banner{% else %}Add Banner{% endif %}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" class="form-control" value="{{ banner.title if banner else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label>Display Order</label>
+        <input type="number" name="display_order" class="form-control" value="{{ banner.display_order if banner else 0 }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Description</label>
+        <textarea name="description" class="form-control" rows="2">{{ banner.description if banner else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Button Text</label>
+        <input type="text" name="button_text" class="form-control" value="{{ banner.button_text if banner else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Button Link</label>
+        <input type="text" name="button_link" class="form-control" value="{{ banner.button_link if banner else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Secondary Button Text</label>
+        <input type="text" name="secondary_button_text" class="form-control" value="{{ banner.secondary_button_text if banner else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Secondary Button Link</label>
+        <input type="text" name="secondary_button_link" class="form-control" value="{{ banner.secondary_button_link if banner else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status" class="form-control">
+          <option value="active" {% if not banner or banner.status=='active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if banner and banner.status=='inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Image</label>
+        {% if banner and banner.image %}<img src="{{ url_for('static', filename=banner.image) }}" class="thumb-lg" onerror="this.src='{{ url_for('static', filename='uploads/banners/default.jpg') }}'"><br>{% endif %}
+        <input type="file" name="image" class="form-control" accept="image/*">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('cms.banners') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

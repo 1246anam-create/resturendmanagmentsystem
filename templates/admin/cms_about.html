@@ -1,0 +1,88 @@
+{% extends "admin/base.html" %}
+{% block title %}About Content{% endblock %}
+{% block page_title %}About Us Page{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Story Title</label>
+        <input type="text" name="story_title" class="form-control" value="{{ about.story_title if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Mission Title</label>
+        <input type="text" name="mission_title" class="form-control" value="{{ about.mission_title if about else '' }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Story</label>
+        <textarea name="story" class="form-control" rows="3">{{ about.story if about else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Mission</label>
+        <textarea name="mission" class="form-control" rows="3">{{ about.mission if about else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Vision</label>
+        <textarea name="vision" class="form-control" rows="3">{{ about.vision if about else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>History</label>
+        <textarea name="history" class="form-control" rows="3">{{ about.history if about else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Chef Name</label>
+        <input type="text" name="chef_name" class="form-control" value="{{ about.chef_name if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Chef Title</label>
+        <input type="text" name="chef_title" class="form-control" value="{{ about.chef_title if about else '' }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Chef Bio</label>
+        <textarea name="chef_bio" class="form-control" rows="2">{{ about.chef_bio if about else '' }}</textarea>
+      </div>
+      <div class="form-group">
+        <label>Stat 1 Label</label>
+        <input type="text" name="stat1_label" class="form-control" value="{{ about.stat1_label if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 1 Value</label>
+        <input type="text" name="stat1_value" class="form-control" value="{{ about.stat1_value if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 2 Label</label>
+        <input type="text" name="stat2_label" class="form-control" value="{{ about.stat2_label if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 2 Value</label>
+        <input type="text" name="stat2_value" class="form-control" value="{{ about.stat2_value if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 3 Label</label>
+        <input type="text" name="stat3_label" class="form-control" value="{{ about.stat3_label if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 3 Value</label>
+        <input type="text" name="stat3_value" class="form-control" value="{{ about.stat3_value if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 4 Label</label>
+        <input type="text" name="stat4_label" class="form-control" value="{{ about.stat4_label if about else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Stat 4 Value</label>
+        <input type="text" name="stat4_value" class="form-control" value="{{ about.stat4_value if about else '' }}">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Chef Image</label>
+        {% if about and about.chef_image %}<img src="{{ url_for('static', filename=about.chef_image) }}" class="thumb-lg"><br>{% endif %}
+        <input type="file" name="chef_image" class="form-control" accept="image/*">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

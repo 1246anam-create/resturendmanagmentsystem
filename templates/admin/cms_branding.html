@@ -1,0 +1,39 @@
+{% extends "admin/base.html" %}
+{% block title %}Branding{% endblock %}
+{% block page_title %}Branding (Logo & Favicon){% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header"><h3>Logo</h3></div>
+    <div class="card-body">
+      {% if header and header.logo %}<img src="{{ url_for('static', filename=header.logo) }}" class="thumb-lg" onerror="this.src='{{ url_for('static', filename='uploads/logo/logo.png') }}'"><br>{% endif %}
+      <form method="POST" enctype="multipart/form-data" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Upload Logo</label>
+          <input type="file" name="logo" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <button class="btn btn-primary">Update Logo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Favicon</h3></div>
+    <div class="card-body">
+      {% if settings and settings.favicon %}<img src="{{ url_for('static', filename=settings.favicon) }}" class="thumb-lg"><br>{% endif %}
+      <form method="POST" enctype="multipart/form-data" class="form-grid">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Upload Favicon</label>
+          <input type="file" name="favicon" class="form-control" accept="image/*">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <button class="btn btn-primary">Update Favicon</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

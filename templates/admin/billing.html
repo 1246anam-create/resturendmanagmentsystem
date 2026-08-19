@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% block title %}Billing{% endblock %}
+{% block page_title %}Billing & Invoices{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Order #</th><th>Customer</th><th>Subtotal</th><th>Discount</th><th>Tax</th><th>Total</th><th>Payment</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+      <tr>
+        <td><a href="{{ url_for('admin.order_detail', oid=o.id) }}">{{ o.order_number }}</a></td>
+        <td>{{ o.customer.full_name if o.customer else (o.customer_name if o.customer_name else 'Walk-in') }}</td>
+        <td>{{ o.subtotal|currency }}</td>
+        <td>-{{ o.discount|currency }}</td>
+        <td>{{ o.tax|currency }}</td>
+        <td><strong>{{ o.total|currency }}</strong></td>
+        <td><span class="badge badge-{{ 'success' if o.payment_status=='paid' else 'warning' }}">{{ o.payment_status }}</span></td>
+        <td>
+          <a href="{{ url_for('admin.view_invoice', oid=o.id) }}" class="btn btn-sm btn-outline">Invoice</a>
+          <a href="{{ url_for('admin.pay_order', oid=o.id) }}" class="btn btn-sm btn-primary">Pay</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">No orders to bill.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

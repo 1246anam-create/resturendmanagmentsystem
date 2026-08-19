@@ -1,0 +1,21 @@
+{% extends "manager/base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block page_title %}Inventory{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Name</th><th>Category</th><th>Qty</th><th>Unit</th><th>Min</th><th>Supplier</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for it in items %}
+      <tr>
+        <td>{{ it.name }}</td><td>{{ it.category }}</td><td>{{ it.quantity }}</td><td>{{ it.unit }}</td><td>{{ it.minimum_stock }}</td>
+        <td>{{ it.supplier.name if it.supplier else '-' }}</td>
+        <td><span class="badge badge-{{ it.status|status_badge }}">{{ it.status }}</span></td>
+      </tr>
+      {% else %}<tr><td colspan="7" class="empty-state">No items.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

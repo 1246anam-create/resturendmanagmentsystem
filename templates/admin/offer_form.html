@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+{% block title %}{% if offer %}Edit Offer{% else %}Add Offer{% endif %}{% endblock %}
+{% block page_title %}{% if offer %}Edit Offer{% else %}Add Offer{% endif %}{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" class="form-control" value="{{ offer.title if offer else '' }}" required>
+      </div>
+      <div class="form-group">
+        <label>Code</label>
+        <input type="text" name="code" class="form-control" value="{{ offer.code if offer else '' }}" placeholder="SUMMER20">
+      </div>
+      <div class="form-group">
+        <label>Discount Type</label>
+        <select name="discount_type" class="form-control">
+          <option value="percent" {% if not offer or offer.discount_type=='percent' %}selected{% endif %}>Percent</option>
+          <option value="fixed" {% if offer and offer.discount_type=='fixed' %}selected{% endif %}>Fixed Amount</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Discount Value</label>
+        <input type="number" step="0.01" name="discount_value" class="form-control" value="{{ offer.discount_value if offer else 0 }}">
+      </div>
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" name="start_date" class="form-control" value="{{ offer.start_date.isoformat() if offer and offer.start_date else '' }}">
+      </div>
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" name="end_date" class="form-control" value="{{ offer.end_date.isoformat() if offer and offer.end_date else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Min Order</label>
+        <input type="number" step="0.01" name="min_order" class="form-control" value="{{ offer.min_order if offer else 0 }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status" class="form-control">
+          <option value="active" {% if not offer or offer.status=='active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if offer and offer.status=='inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Description</label>
+        <textarea name="description" class="form-control" rows="2">{{ offer.description if offer else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ url_for('admin.offers') }}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

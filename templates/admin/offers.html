@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% block title %}Offers{% endblock %}
+{% block page_title %}Offers & Discounts{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('admin.offer_add') }}" class="btn btn-success">+ Add Offer</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Title</th><th>Code</th><th>Type</th><th>Value</th><th>Start</th><th>End</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for o in offers %}
+      <tr>
+        <td>{{ o.title }}</td>
+        <td>{{ o.code or '-' }}</td>
+        <td>{{ o.discount_type }}</td>
+        <td>{% if o.discount_type=='percent' %}{{ o.discount_value }}%{% else %}{{ o.discount_value|currency }}{% endif %}</td>
+        <td>{{ o.start_date.strftime('%Y-%m-%d') if o.start_date else '-' }}</td>
+        <td>{{ o.end_date.strftime('%Y-%m-%d') if o.end_date else '-' }}</td>
+        <td><span class="badge badge-{{ 'success' if o.is_active_now() else 'secondary' }}">{{ 'active' if o.is_active_now() else 'inactive' }}</span></td>
+        <td>
+          <a href="{{ url_for('admin.offer_edit', oid=o.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('admin.offer_delete', oid=o.id) }}" data-confirm="Delete this offer?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">No offers.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% block title %}Reviews{% endblock %}
+{% block page_title %}Customer Reviews{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>ID</th><th>Customer</th><th>Item</th><th>Rating</th><th>Comment</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for r in reviews %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.customer.full_name if r.customer else 'Guest' }}</td>
+        <td>{{ r.menu_item.name if r.menu_item else '-' }}</td>
+        <td>{% for i in range(r.rating) %}★{% endfor %} ({{ r.rating }})</td>
+        <td>{{ r.comment|truncate(60) if r.comment else '-' }}</td>
+        <td><span class="badge badge-{{ r.status|status_badge }}">{{ r.status }}</span></td>
+        <td>
+          <form method="POST" action="{{ url_for('admin.review_status', rid=r.id) }}" class="d-flex gap-1" style="display:inline-flex">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+              <option value="pending" {% if r.status=='pending' %}selected{% endif %}>Pending</option>
+              <option value="approved" {% if r.status=='approved' %}selected{% endif %}>Approved</option>
+              <option value="rejected" {% if r.status=='rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="empty-state">No reviews.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

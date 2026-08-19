@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block page_title %}Order {{ order.order_number }}{% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header d-flex between"><h3>Order Info</h3><span class="badge badge-info">{{ order.order_status }}</span></div>
+    <div class="card-body">
+      <p><strong>Type:</strong> {{ order.order_type.replace('_',' ').title() }}</p>
+      <p><strong>Customer:</strong> {{ order.customer.full_name if order.customer else (order.customer_name if order.customer_name else 'Walk-in') }}</p>
+      <p><strong>Table:</strong> {{ order.table.table_number if order.table else '-' }}</p>
+      <p><strong>Waiter:</strong> {{ order.waiter.full_name if order.waiter else '-' }}</p>
+      <p><strong>Payment:</strong> {{ order.payment_status }} ({{ order.payment_method }})</p>
+      <p><strong>Created:</strong> {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+      {% if order.special_instructions %}<p><strong>Notes:</strong> {{ order.special_instructions }}</p>{% endif %}
+      <div class="d-flex gap-1">
+        <a href="{{ url_for('admin.pay_order', oid=order.id) }}" class="btn btn-primary">Payment</a>
+        <a href="{{ url_for('admin.view_invoice', oid=order.id) }}" class="btn btn-outline">Invoice</a>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><h3>Items</h3></div>
+    <div class="card-body table-responsive">
+      <table class="data">
+        <thead><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Total</th></tr></thead>
+        <tbody>
+        {% for it in order.items %}
+        <tr>
+          <td>{{ it.menu_item.name if it.menu_item else 'Item' }}</td>
+          <td>{{ it.quantity }}</td>
+          <td>{{ it.unit_price|currency }}</td>
+          <td>{{ it.line_total|currency }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3" class="text-right"><strong>Subtotal</strong></td><td>{{ order.subtotal|currency }}</td></tr>
+          <tr><td colspan="3" class="text-right"><strong>Discount</strong></td><td>-{{ order.discount|currency }}</td></tr>
+          <tr><td colspan="3" class="text-right"><strong>Tax</strong></td><td>{{ order.tax|currency }}</td></tr>
+          {% if order.delivery_charges %}<tr><td colspan="3" class="text-right"><strong>Delivery</strong></td><td>{{ order.delivery_charges|currency }}</td></tr>{% endif %}
+          <tr><td colspan="3" class="text-right"><strong>Total</strong></td><td><strong>{{ order.total|currency }}</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+{% if order.delivery_record %}
+<div class="card mt-2">
+  <div class="card-header"><h3>Delivery</h3></div>
+  <div class="card-body">
+    <p><strong>Address:</strong> {{ order.delivery_record.address }}</p>
+    <p><strong>Phone:</strong> {{ order.delivery_record.phone }}</p>
+    <p><strong>Status:</strong> {{ order.delivery_record.status }}</p>
+    <p><strong>Staff:</strong> {{ order.delivery_record.delivery_staff.full_name if order.delivery_record.delivery_staff else 'Unassigned' }}</p>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block title %}Services{% endblock %}
+{% block page_title %}Website Services{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('cms.service_add') }}" class="btn btn-success">+ Add Service</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Icon</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for s in services %}
+      <tr>
+        <td><i class="fa fa-{{ s.icon }}"></i> {{ s.icon }}</td>
+        <td>{{ s.title }}</td>
+        <td>{{ s.display_order }}</td>
+        <td><span class="badge badge-{{ 'success' if s.status=='active' else 'secondary' }}">{{ s.status }}</span></td>
+        <td>
+          <a href="{{ url_for('cms.service_edit', sid=s.id) }}" class="btn btn-sm btn-outline">Edit</a>
+          <button class="btn btn-sm btn-danger" data-action data-url="{{ url_for('cms.service_delete', sid=s.id) }}" data-confirm="Delete this service?">Delete</button>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="empty-state">No services.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

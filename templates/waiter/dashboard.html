@@ -1,0 +1,32 @@
+{% extends "waiter/base.html" %}
+{% block title %}Waiter Dashboard{% endblock %}
+{% block page_title %}Waiter Dashboard{% endblock %}
+{% block content %}
+<div class="grid grid-4">
+  <div class="stat-card"><div class="stat-value">{{ tables|length }}</div><div class="stat-label">Tables</div></div>
+  <div class="stat-card"><div class="stat-value">{{ active }}</div><div class="stat-label">Active Orders</div></div>
+  <div class="stat-card"><div class="stat-value">{{ ready }}</div><div class="stat-label">Ready</div></div>
+  <div class="stat-card"><div class="stat-value">{{ served }}</div><div class="stat-label">Served</div></div>
+</div>
+<div class="toolbar">
+  <div></div>
+  <a href="{{ url_for('waiter.pos') }}" class="btn btn-success">+ New Order (POS)</a>
+</div>
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>Table #</th><th>Capacity</th><th>Status</th><th>Current Order</th></tr></thead>
+      <tbody>
+      {% for t in tables %}
+      <tr>
+        <td><a href="{{ url_for('waiter.pos', table_id=t.id) }}">{{ t.table_number }}</a></td>
+        <td>{{ t.capacity }}</td>
+        <td><span class="badge badge-{{ t.status|status_badge }}">{{ t.status }}</span></td>
+        <td>{% if t.current_order_id %}#{{ t.current_order_id }}{% else %}-{% endif %}</td>
+      </tr>
+      {% else %}<tr><td colspan="4" class="empty-state">No tables.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

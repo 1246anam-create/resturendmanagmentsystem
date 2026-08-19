@@ -1,0 +1,25 @@
+{% extends "public/base.html" %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="section-head"><h2>Contact Us</h2><p>We'd love to hear from you</p></div>
+  <div class="grid-2" style="max-width:1000px;margin:0 auto">
+    <div class="card"><div class="card-body">
+      <h4>Get in Touch</h4>
+      <p class="text-muted">{{ restaurant.address if restaurant and restaurant.address else '123 Main Street, City' }}</p>
+      <p class="text-muted">Phone: {{ restaurant.phone if restaurant and restaurant.phone else 'N/A' }}</p>
+      <p class="text-muted">Email: {{ restaurant.email if restaurant and restaurant.email else 'N/A' }}</p>
+      <p class="text-muted">Hours: {{ restaurant.opening_hours if restaurant and restaurant.opening_hours else 'Mon-Sun: 9:00 AM - 11:00 PM' }}</p>
+    </div></div>
+    <div class="card"><div class="card-body">
+      <form method="POST" action="{{ url_for('public.contact') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group"><label>Name</label><input type="text" name="name" required class="form-control"></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" required class="form-control"></div>
+        <div class="form-group"><label>Message</label><textarea name="message" required class="form-control"></textarea></div>
+        <button type="submit" class="btn btn-primary btn-block">Send Message</button>
+      </form>
+    </div></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "manager/base.html" %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Orders{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="data">
+      <thead><tr><th>#</th><th>Type</th><th>Customer</th><th>Total</th><th>Status</th><th>Payment</th><th>Date</th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>{{ o.order_number }}</td>
+        <td>{{ o.order_type.replace('_',' ').title() }}</td>
+        <td>{{ o.customer.full_name if o.customer else (o.customer_name if o.customer_name else 'Walk-in') }}</td>
+        <td>{{ o.total|currency }}</td>
+        <td><span class="badge badge-{{ o.order_status|status_badge }}">{{ o.order_status }}</span></td>
+        <td>{{ o.payment_status }}</td>
+        <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% else %}<tr><td colspan="7" class="empty-state">No orders.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

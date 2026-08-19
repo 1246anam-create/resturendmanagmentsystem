@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+{% block title %}Restaurant Settings{% endblock %}
+{% block page_title %}Restaurant Settings{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <form method="POST" enctype="multipart/form-data" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" value="{{ settings.name if settings else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" class="form-control" value="{{ settings.phone if settings else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" name="email" class="form-control" value="{{ settings.email if settings else '' }}">
+      </div>
+      <div class="form-group">
+        <label>Currency</label>
+        <input type="text" name="currency" class="form-control" value="{{ settings.currency if settings else 'USD' }}">
+      </div>
+      <div class="form-group">
+        <label>Currency Symbol</label>
+        <input type="text" name="currency_symbol" class="form-control" value="{{ settings.currency_symbol if settings else '$' }}">
+      </div>
+      <div class="form-group">
+        <label>Tax Rate (%)</label>
+        <input type="number" step="0.01" name="tax_rate" class="form-control" value="{{ settings.tax_rate if settings else 10 }}">
+      </div>
+      <div class="form-group">
+        <label>Delivery Charges</label>
+        <input type="number" step="0.01" name="delivery_charges" class="form-control" value="{{ settings.delivery_charges if settings else 5 }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status" class="form-control">
+          <option value="open" {% if settings and settings.status=='open' %}selected{% endif %}>Open</option>
+          <option value="closed" {% if settings and settings.status=='closed' %}selected{% endif %}>Closed</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Address</label>
+        <textarea name="address" class="form-control" rows="2">{{ settings.address if settings else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Opening Hours</label>
+        <textarea name="opening_hours" class="form-control" rows="2">{{ settings.opening_hours if settings else '' }}</textarea>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Favicon</label>
+        {% if settings and settings.favicon %}<img src="{{ url_for('static', filename=settings.favicon) }}" class="thumb-lg"><br>{% endif %}
+        <input type="file" name="favicon" class="form-control" accept="image/*">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <button class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
