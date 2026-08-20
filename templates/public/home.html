@@ -17,7 +17,7 @@
   <div class="banner-slider" id="bannerSlider" data-autoplay="{% if banners[0].auto_play %}1{% else %}0{% endif %}" data-interval="{{ banners[0].auto_play_interval }}">
     {% for b in banners %}
     <div class="banner-slide" data-animation="{{ b.animation_type }}" data-duration="{{ b.animation_duration }}" {% if not loop.first %}style="display:none"{% endif %}>
-      {% if b.image %}<img src="{{ url_for('static', filename=b.image) }}" alt="{{ b.title }}" class="banner-img" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/banners/default.jpg') }}'">{% endif %}
+      {% if b.image %}<img src="{% if b.image.startswith('http') %}{{ b.image }}{% else %}{{ url_for('static', filename=b.image) }}{% endif %}" alt="{{ b.title }}" class="banner-img" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/banners/default.jpg') }}'">{% endif %}
       <div class="banner-content">
         <h2 class="banner-title">{{ b.title }}</h2>
         {% if b.description %}<p class="banner-desc">{{ b.description }}</p>{% endif %}
