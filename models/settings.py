@@ -35,6 +35,11 @@ class Banner(db.Model):
     secondary_button_link = db.Column(db.String(200))
     display_order = db.Column(db.Integer, default=0)
     status = db.Column(db.String(20), default="active")
+    # Animation fields
+    animation_type = db.Column(db.String(30), default="fade")  # fade, slide, zoom, flip
+    animation_duration = db.Column(db.Integer, default=800)  # milliseconds
+    auto_play = db.Column(db.Boolean, default=True)
+    auto_play_interval = db.Column(db.Integer, default=5000)  # milliseconds
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

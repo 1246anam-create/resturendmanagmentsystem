@@ -106,6 +106,10 @@ def banner_add():
             secondary_button_link=request.form.get("secondary_button_link", ""),
             display_order=sanitize_int(request.form.get("display_order", 0)),
             status=request.form.get("status", "active"),
+            animation_type=request.form.get("animation_type", "fade"),
+            animation_duration=sanitize_int(request.form.get("animation_duration", 800)),
+            auto_play=bool(request.form.get("auto_play")),
+            auto_play_interval=sanitize_int(request.form.get("auto_play_interval", 5000)),
         )
         db.session.add(b)
         db.session.commit()
@@ -127,6 +131,10 @@ def banner_edit(bid):
         b.secondary_button_link = request.form.get("secondary_button_link", "")
         b.display_order = sanitize_int(request.form.get("display_order", 0))
         b.status = request.form.get("status", "active")
+        b.animation_type = request.form.get("animation_type", "fade")
+        b.animation_duration = sanitize_int(request.form.get("animation_duration", 800))
+        b.auto_play = bool(request.form.get("auto_play"))
+        b.auto_play_interval = sanitize_int(request.form.get("auto_play_interval", 5000))
         if request.files.get("image"):
             path = save_uploaded_file(request.files["image"], "banners")
             if path is None:

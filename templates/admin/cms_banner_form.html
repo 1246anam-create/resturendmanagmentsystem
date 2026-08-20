@@ -41,6 +41,30 @@
           <option value="inactive" {% if banner and banner.status=='inactive' %}selected{% endif %}>Inactive</option>
         </select>
       </div>
+      <div class="form-group">
+        <label>Animation Type</label>
+        <select name="animation_type" class="form-control">
+          <option value="fade" {% if not banner or banner.animation_type=='fade' %}selected{% endif %}>Fade</option>
+          <option value="slide" {% if banner and banner.animation_type=='slide' %}selected{% endif %}>Slide</option>
+          <option value="zoom" {% if banner and banner.animation_type=='zoom' %}selected{% endif %}>Zoom</option>
+          <option value="flip" {% if banner and banner.animation_type=='flip' %}selected{% endif %}>Flip</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Animation Duration (ms)</label>
+        <input type="number" name="animation_duration" class="form-control" value="{{ banner.animation_duration if banner else 800 }}">
+      </div>
+      <div class="form-group">
+        <label>Auto Play Interval (ms)</label>
+        <input type="number" name="auto_play_interval" class="form-control" value="{{ banner.auto_play_interval if banner else 5000 }}">
+      </div>
+      <div class="form-group">
+        <label>Auto Play</label>
+        <select name="auto_play" class="form-control">
+          <option value="1" {% if not banner or banner.auto_play %}selected{% endif %}>Yes</option>
+          <option value="0" {% if banner and not banner.auto_play %}selected{% endif %}>No</option>
+        </select>
+      </div>
       <div class="form-group" style="grid-column:1/-1">
         <label>Image</label>
         {% if banner and banner.image %}<img src="{{ url_for('static', filename=banner.image) }}" class="thumb-lg" onerror="this.src='{{ url_for('static', filename='uploads/banners/default.jpg') }}'"><br>{% endif %}
