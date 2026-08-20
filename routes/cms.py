@@ -91,11 +91,13 @@ def banners():
 def banner_add():
     if request.method == "POST":
         image = None
-        if request.files.get("image"):
+        if request.files.get("image") and request.files["image"].filename:
             image = save_uploaded_file(request.files["image"], "banners")
             if image is None:
                 flash("Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP, SVG, ICO) under 16MB.", "danger")
                 return render_template("admin/cms_banner_form.html", banner=None)
+        if not image and request.form.get("image_url"):
+            image = request.form.get("image_url").strip()
         b = Banner(
             title=request.form.get("title", "").strip(),
             description=request.form.get("description", ""),
@@ -135,12 +137,14 @@ def banner_edit(bid):
         b.animation_duration = sanitize_int(request.form.get("animation_duration", 800))
         b.auto_play = bool(request.form.get("auto_play"))
         b.auto_play_interval = sanitize_int(request.form.get("auto_play_interval", 5000))
-        if request.files.get("image"):
+        if request.files.get("image") and request.files["image"].filename:
             path = save_uploaded_file(request.files["image"], "banners")
             if path is None:
                 flash("Invalid image file. Please upload a valid image (PNG, JPG, JPEG, GIF, WebP, SVG, ICO) under 16MB.", "danger")
                 return render_template("admin/cms_banner_form.html", banner=b)
             b.image = path
+        elif request.form.get("image_url"):
+            b.image = request.form.get("image_url").strip()
         db.session.commit()
         log_activity(current_user, "banner_updated", "cms", request.remote_addr)
         flash("Banner updated.", "success")
