@@ -11,21 +11,33 @@
   </div>
 </section>
 
-<!-- Banners -->
+<!-- Banners Slider -->
 {% if banners %}
-<section class="section" style="padding-top:2rem;padding-bottom:1rem">
-  <div class="grid-auto">
+<section class="banner-slider-section">
+  <div class="banner-slider" id="bannerSlider" data-autoplay="{% if banners[0].auto_play %}1{% else %}0{% endif %}" data-interval="{{ banners[0].auto_play_interval }}">
     {% for b in banners %}
-    <div class="card" style="overflow:hidden">
-      {% if b.image %}<img src="{{ url_for('static', filename=b.image) }}" alt="{{ b.title }}" style="width:100%;height:160px;object-fit:cover">{% endif %}
-      <div class="card-body">
-        <h4>{{ b.title }}</h4>
-        <p class="small text-muted">{{ b.description }}</p>
-        <a href="{{ b.button_link }}" class="btn btn-sm btn-primary">{{ b.button_text }}</a>
+    <div class="banner-slide" data-animation="{{ b.animation_type }}" data-duration="{{ b.animation_duration }}" {% if not loop.first %}style="display:none"{% endif %}>
+      {% if b.image %}<img src="{{ url_for('static', filename=b.image) }}" alt="{{ b.title }}" class="banner-img" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/banners/default.jpg') }}'">{% endif %}
+      <div class="banner-content">
+        <h2 class="banner-title">{{ b.title }}</h2>
+        {% if b.description %}<p class="banner-desc">{{ b.description }}</p>{% endif %}
+        <div class="banner-actions">
+          <a href="{{ b.button_link }}" class="btn btn-accent btn-lg">{{ b.button_text }}</a>
+          {% if b.secondary_button_text %}<a href="{{ b.secondary_button_link }}" class="btn btn-light btn-lg">{{ b.secondary_button_text }}</a>{% endif %}
+        </div>
       </div>
     </div>
     {% endfor %}
   </div>
+  {% if banners|length > 1 %}
+  <button class="banner-nav banner-prev" onclick="bannerPrev()">&#10094;</button>
+  <button class="banner-nav banner-next" onclick="bannerNext()">&#10095;</button>
+  <div class="banner-dots">
+    {% for b in banners %}
+    <span class="banner-dot {% if loop.first %}active{% endif %}" onclick="bannerGoTo({{ loop.index0 }})"></span>
+    {% endfor %}
+  </div>
+  {% endif %}
 </section>
 {% endif %}
 
@@ -36,7 +48,7 @@
   <div class="grid-auto">
     {% for c in categories %}
     <a href="{{ url_for('public.menu', category=c.id) }}" class="menu-card">
-      <div class="img">{% if c.image %}<img src="{{ url_for('static', filename=c.image) }}" alt="{{ c.name }}">{% else %}🍴{% endif %}</div>
+      <div class="img">{% if c.image %}<img src="{{ url_for('static', filename=c.image) }}" alt="{{ c.name }}" onerror="this.onerror=null;this.style.display='none';this.parentElement.textContent='🍴'">{% else %}🍴{% endif %}</div>
       <div class="body"><h4>{{ c.name }}</h4><p class="small text-muted">{{ c.description or '' }}</p></div>
     </a>
     {% endfor %}
@@ -70,7 +82,7 @@
   <div class="grid-3">
     {% for s in services %}
     <div class="service-card">
-      <div class="ic">{% if s.image %}<img src="{{ url_for('static', filename=s.image) }}" style="width:48px;height:48px;border-radius:10px;object-fit:cover">{% else %}⚙️{% endif %}</div>
+      <div class="ic">{% if s.image %}<img src="{{ url_for('static', filename=s.image) }}" style="width:48px;height:48px;border-radius:10px;object-fit:cover" onerror="this.onerror=null;this.style.display='none';this.parentElement.textContent='⚙️'">{% else %}⚙️{% endif %}</div>
       <h4>{{ s.title }}</h4>
       <p class="small text-muted">{{ s.description }}</p>
       <a href="{{ s.button_link }}" class="btn btn-sm btn-outline">{{ s.button_text }}</a>
@@ -87,7 +99,7 @@
   <div class="grid-auto">
     {% for item in popular %}
     <div class="menu-card">
-      <div class="img">{% if item.image %}<img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}">{% else %}🍽️{% endif %}</div>
+      <div class="img">{% if item.image %}<img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/products/default.png') }}'">{% else %}🍽️{% endif %}</div>
       <div class="body">
         <h4>{{ item.name }}</h4>
         <div class="price">{{ item.final_price|currency }} {% if item.rating %}<span class="badge badge-warning">★ {{ item.rating }}</span>{% endif %}</div>
@@ -105,7 +117,7 @@
   <div class="grid-auto">
     {% for o in offers %}
     <div class="card" style="overflow:hidden">
-      {% if o.image %}<img src="{{ url_for('static', filename=o.image) }}" style="width:100%;height:150px;object-fit:cover">{% endif %}
+      {% if o.image %}<img src="{{ url_for('static', filename=o.image) }}" style="width:100%;height:150px;object-fit:cover" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/products/default.png') }}'">{% endif %}
       <div class="card-body">
         <h4>{{ o.name }}</h4>
         <p class="small text-muted">{{ o.description }}</p>
