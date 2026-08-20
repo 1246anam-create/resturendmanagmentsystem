@@ -18,6 +18,20 @@ bp = Blueprint("public", __name__)
 @bp.route("/")
 def home():
     banners = Banner.query.filter_by(status="active").order_by(Banner.display_order).all()
+    if not banners:
+        class _DefaultBanner:
+            title = "Fresh Taste. Beautiful Moments."
+            description = "Order your favorite dishes now"
+            image = "uploads/banners/banner_main.jpg"
+            button_text = "Explore Menu"
+            button_link = "/menu"
+            secondary_button_text = ""
+            secondary_button_link = ""
+            animation_type = "fade"
+            animation_duration = 800
+            auto_play = True
+            auto_play_interval = 5000
+        banners = [_DefaultBanner()]
     featured = MenuItem.query.filter_by(featured=True, status="active", availability="available").limit(8).all()
     categories = Category.query.filter_by(status="active").order_by(Category.display_order).limit(6).all()
     services = Service.query.filter_by(status="active").order_by(Service.display_order).all()
